@@ -225,6 +225,7 @@ namespace Core::Materials
     mes_iso1pow,          ///< isochoric general power hyperelastic potential summand for modinv I
     mes_iso2pow,          ///< isochoric general power hyperelastic potential summand for modiinv II
     mes_isoanisoexpo,     ///< isochoric anisotropic single fiber material
+    mes_isoanisoexpoactive, ///< isochoric anisotropic active exponential fiber material
     mes_isoexpopow,       ///< isochoric exponential hyperelastic potential summand
     mes_isomooneyrivlin,  ///< isochoric Mooney-Rivlin hyperelastic potential summand
     mes_isomuscleblemker,  ///< isochoric Blemker active stress muscle material

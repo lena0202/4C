@@ -16,6 +16,7 @@
 #include "4C_linalg_utils_densematrix_eigen.hpp"
 #include "4C_linalg_vector.hpp"
 #include "4C_mat_service.hpp"
+#include "4C_mat_elast_activesummand.hpp"
 
 FOUR_C_NAMESPACE_OPEN
 
@@ -71,6 +72,12 @@ void Mat::elast_hyper_evaluate(const Core::LinAlg::Tensor<double, 3, 3>& defgrd,
   // Evaluate anisotropic stress response from summands with modified invariants formulation
   if (properties.anisomod)
     elast_hyper_add_anisotropic_mod(stress, cmat, C_strain, iC, prinv, gp, eleGID, context, potsum);
+  
+  // Active stress contribution (ActiveSummand)
+  const double totaltime = (context.total_time != nullptr) ? *context.total_time : 0.0;
+  for (auto& p : potsum)
+    if (auto* act = dynamic_cast<Mat::Elastic::ActiveSummand*>(p.get()))
+      act->add_active_stress_cmat_aniso(C_strain, cmat, stress, gp, eleGID, totaltime);
 }
 
 void Mat::evaluate_right_cauchy_green_strain_like_voigt(

@@ -43,6 +43,7 @@
 #include "4C_mat_elast_iso1pow.hpp"
 #include "4C_mat_elast_iso2pow.hpp"
 #include "4C_mat_elast_isoanisoexpo.hpp"
+#include "4C_mat_elast_isoanisoexpoactive.hpp"
 #include "4C_mat_elast_isoexpopow.hpp"
 #include "4C_mat_elast_isomooneyrivlin.hpp"
 #include "4C_mat_elast_isomuscle_blemker.hpp"
@@ -712,6 +713,10 @@ std::unique_ptr<Core::Mat::PAR::Parameter> Mat::make_parameter(
     case Core::Materials::mes_coupanisoexpoactive:
     {
       return make_parameter_impl<Mat::Elastic::PAR::CoupAnisoExpoActive>(id, type, input_data);
+    }
+    case Core::Materials::mes_isoanisoexpoactive:
+    {
+      return make_parameter_impl<Mat::Elastic::PAR::IsoAnisoExpoActive>(id, type, input_data);
     }
     case Core::Materials::mes_coupanisoexpo:
     {

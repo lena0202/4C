@@ -40,7 +40,8 @@ namespace Mat
           Core::LinAlg::SymmetricTensor<double, 3, 3, 3, 3>& cmat,  ///< material stiffness matrix
           Core::LinAlg::SymmetricTensor<double, 3, 3>& stress,      ///< 2nd PK-stress
           int gp,                                                   ///< Gauss point
-          int eleGID) const = 0;                                    ///< element GID
+          int eleGID,                                 ///< element GID
+          double totaltime) const = 0;  
 
       /*!
        * \brief Evaluates the first derivative of active fiber potential w.r.t. the active fiber

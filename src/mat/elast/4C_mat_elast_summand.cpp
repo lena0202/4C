@@ -33,6 +33,7 @@
 #include "4C_mat_elast_iso1pow.hpp"
 #include "4C_mat_elast_iso2pow.hpp"
 #include "4C_mat_elast_isoanisoexpo.hpp"
+#include "4C_mat_elast_isoanisoexpoactive.hpp"
 #include "4C_mat_elast_isoexpopow.hpp"
 #include "4C_mat_elast_isomooneyrivlin.hpp"
 #include "4C_mat_elast_isomuscle_blemker.hpp"
@@ -208,6 +209,11 @@ std::shared_ptr<Mat::Elastic::Summand> Mat::Elastic::Summand::factory(int matnum
     {
       auto* params = dynamic_cast<Mat::Elastic::PAR::IsoAnisoExpo*>(curmat);
       return std::make_shared<IsoAnisoExpo>(params);
+    }
+    case Core::Materials::mes_isoanisoexpoactive:
+    {
+      auto* params = dynamic_cast<Mat::Elastic::PAR::IsoAnisoExpoActive*>(curmat);
+      return std::make_shared<IsoAnisoExpoActive>(params);
     }
     case Core::Materials::mes_isoexpopow:
     {

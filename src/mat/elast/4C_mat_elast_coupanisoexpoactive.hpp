@@ -173,7 +173,8 @@ namespace Mat
           Core::LinAlg::SymmetricTensor<double, 3, 3, 3, 3>& cmat,  ///< material stiffness matrix
           Core::LinAlg::SymmetricTensor<double, 3, 3>& stress,      ///< 2nd PK-stress
           int gp,                                                   ///< Gauss point
-          int eleGID) const override;                               ///< element GID
+          int eleGID,
+          double totaltime) const override;                               ///< element GID
 
 
       /// evaluate stress and cmat

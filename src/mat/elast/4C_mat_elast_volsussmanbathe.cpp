@@ -9,8 +9,41 @@
 
 #include "4C_material_parameter_base.hpp"
 
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+
 FOUR_C_NAMESPACE_OPEN
 
+// Debug helper: Log Jacobian values for troubleshooting
+namespace
+{
+  void log_jacobian_debug(const double J, const int eleGID, const int gp,
+      const std::string& material_name)
+  {
+    static std::ofstream debugfile;
+    static bool initialized = false;
+
+    if (!initialized) {
+      debugfile.open("4C_jacobian_debug.log", std::ios::app);
+      debugfile << "====== 4C Jacobian Determinant Debug Log ======\n";
+      initialized = true;
+    }
+
+    if (debugfile.is_open()) {
+      debugfile << "Material: " << material_name << " | Element: " << eleGID << " | GP: " << gp
+                << " | J = " << std::scientific << std::setprecision(10) << J << "\n";
+      debugfile.flush();
+    }
+
+    // Also warn to stdout if J is getting critical
+    if (J < 0.1) {
+      std::cerr << "\n!!! WARNING: " << material_name << " Material: J = " << J
+                << " (very small!)\n"
+                << "    Element: " << eleGID << ", Gauss Point: " << gp << "\n";
+    }
+  }
+}  // namespace
 
 Mat::Elastic::PAR::VolSussmanBathe::VolSussmanBathe(const Core::Mat::PAR::Parameter::Data& matdata)
     : Parameter(matdata), kappa_(matdata.parameters.get<double>("KAPPA"))
@@ -27,10 +60,14 @@ void Mat::Elastic::VolSussmanBathe::add_strain_energy(double& psi,
     const Core::LinAlg::SymmetricTensor<double, 3, 3>& glstrain, const int gp, const int eleGID)
 {
   const double kappa = params_->kappa_;
+  const double J = modinv(2);  // J = sqrt(I_3)
+
+  // Debug logging
+  log_jacobian_debug(J, eleGID, gp, "VolSussmanBathe");
 
   // strain energy: Psi = \frac \kappa 2 (J-1)^2
   // add to overall strain energy
-  psi += kappa * 0.5 * (modinv(2) - 1.) * (modinv(2) - 1.);
+  psi += kappa * 0.5 * (J - 1.) * (J - 1.);
 }
 
 void Mat::Elastic::VolSussmanBathe::add_derivatives_modified(Core::LinAlg::Matrix<3, 1>& dPmodI,
@@ -38,8 +75,12 @@ void Mat::Elastic::VolSussmanBathe::add_derivatives_modified(Core::LinAlg::Matri
     const int eleGID)
 {
   const double kappa = params_->kappa_;
+  const double J = modinv(2);  // J = sqrt(I_3)
 
-  dPmodI(2) += kappa * (modinv(2) - 1.);
+  // Debug logging
+  log_jacobian_debug(J, eleGID, gp, "VolSussmanBathe");
+
+  dPmodI(2) += kappa * (J - 1.);
 
   ddPmodII(2) += kappa;
 }
@@ -47,6 +88,11 @@ void Mat::Elastic::VolSussmanBathe::add_derivatives_modified(Core::LinAlg::Matri
 void Mat::Elastic::VolSussmanBathe::add3rd_vol_deriv(
     const Core::LinAlg::Matrix<3, 1>& modinv, double& d3PsiVolDJ3)
 {
+  const double J = modinv(2);  // J = sqrt(I_3)
+
+  // Debug logging (no element/GP info available in this method)
+  log_jacobian_debug(J, -1, -1, "VolSussmanBathe (3rd deriv)");
+
   d3PsiVolDJ3 += 0.;
 }
 FOUR_C_NAMESPACE_CLOSE

@@ -2312,6 +2312,31 @@ std::unordered_map<Core::Materials::MaterialType, Core::IO::InputSpec> Global::v
   }
 
   /*--------------------------------------------------------------------*/
+  // isochoric anisotropic active material with one exponential fiber family
+  {
+    known_materials[Core::Materials::mes_isoanisoexpoactive] = group("ELAST_IsoAnisoExpoActive",
+        {
+            parameter<double>("GAMMA", {.description = "angle between circumferential and fiber direction"}),
+            parameter<int>("INIT",
+                {.description = "initialization modus for fiber alignment", .default_value = 1}),
+            parameter<bool>("ADAPT_ANGLE",
+                {.description = "adapt angle during remodeling", .default_value = false}),
+            // In 4C_global_legacy_module_validmaterials.cpp, nach ADAPT_ANGLE einfügen:
+            parameter<int>("STR_TENS_ID", {.description = "MAT ID for structural tensor (required by base class)", .default_value = 0}),
+            parameter<double>("MUE_SMC", {.description = "actin-myosin filament stiffness [MPa]"}),
+            parameter<double>("URS0", {.description = "resting state normalized relative sliding (default 0.1)", .default_value = 0.1}),
+            parameter<double>("A0", {.description = "contraction amplitude (0.5 circular, 0.4 longitudinal)"}),
+            parameter<double>("V", {.description = "speed of the activation wave (0 = constant activation everywhere)",
+                                       .default_value = 0.0}),
+            parameter<double>("DELTA_L", {.description = "length of the contracting segment in reference config",
+                                             .default_value = 0.0}),
+            parameter<double>("T0", {.description = "time delay of activation initiation",
+                                        .default_value = 0.0}),
+        },
+        {.description = "anisotropic active fiber material"});
+  }
+
+  /*--------------------------------------------------------------------*/
   // structural tensor
   {
     known_materials[Core::Materials::mes_structuraltensorstratgy] = group("ELAST_StructuralTensor",

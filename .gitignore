@@ -94,3 +94,6 @@ utilities/python-venv/*
 
 # Ruby
 .bundle
+
+input/
+output/

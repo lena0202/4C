@@ -6,7 +6,6 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later
 
 #include "4C_mat_elast_coupanisoexpoactive.hpp"
-
 #include "4C_comm_pack_helpers.hpp"
 #include "4C_linalg_FADmatrix_utils.hpp"
 #include "4C_linalg_symmetric_tensor.hpp"
@@ -138,8 +137,10 @@ void Mat::Elastic::CoupAnisoExpoActive::evaluate_active_stress_cmat_aniso(
 void Mat::Elastic::CoupAnisoExpoActive::add_active_stress_cmat_aniso(
     Core::LinAlg::SymmetricTensor<double, 3, 3> const& CM,
     Core::LinAlg::SymmetricTensor<double, 3, 3, 3, 3>& cmat,
-    Core::LinAlg::SymmetricTensor<double, 3, 3>& stress, const int gp, const int eleGID) const
+   Core::LinAlg::SymmetricTensor<double, 3, 3>& stress, const int gp, const int eleGID,
+    const double totaltime) const
 {
+  (void)totaltime;  // CoupAnisoExpoActive nutzt keine zeitabhaengige Aktivierung
   double lambda_sq = Core::LinAlg::ddot(CM, anisotropy_extension_.get_structural_tensor(gp, 0));
 
   double dPIact_T = 0.0;
